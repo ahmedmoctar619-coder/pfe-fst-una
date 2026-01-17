@@ -1,4 +1,4 @@
-// backend/server.js
+// backend/server.js (version corrigée)
 
 const express = require('express');
 const cors = require('cors');
@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost', 'http://127.0.0.1'],
+    origin: ['http://localhost', 'http://127.0.0.1', 'file://'],
     credentials: true
 }));
 
@@ -52,21 +52,70 @@ app.get('/api/status', (req, res) => {
 // Routes d'authentification
 app.use('/api/auth', require('./routes/auth'));
 
-// Routes des sujets PFE
+// Routes des sujets PFE (publiques en lecture)
 app.use('/api/subjects', require('./routes/subjects'));
 
-// Routes protégées
-app.use('/api/protected/subjects', authenticate, authorize('teacher', 'admin'), require('./routes/protected/subjects'));
-app.use('/api/protected/users', authenticate, authorize('admin'), require('./routes/protected/users'));
-app.use('/api/protected/enrollments', authenticate, require('./routes/protected/enrollments'));
-app.use('/api/protected/student', authenticate, authorize('student'), require('./routes/protected/student'));
-app.use('/api/protected/teacher', authenticate, authorize('teacher'), require('./routes/protected/teacher'));
-
-// Routes des utilisateurs
+// Routes des utilisateurs (publiques pour test)
 app.use('/api/users', require('./routes/users'));
 
 // Routes des statistiques
 app.use('/api/stats', require('./routes/stats'));
+
+// ===== ROUTES PROTÉGÉES (TEMPORAIREMENT SIMPLIFIÉES) =====
+
+// Route test d'authentification
+app.get('/api/protected/test', authenticate, (req, res) => {
+    res.json({
+        success: true,
+        message: "Accès autorisé",
+        user: req.user
+    });
+});
+
+// Route pour étudiants
+app.get('/api/student/dashboard', authenticate, authorize('student'), (req, res) => {
+    res.json({
+        success: true,
+        message: "Dashboard étudiant",
+        user: req.user,
+        data: {
+            enrollments: [],
+            subjects: [],
+            stats: {
+                pfeStatus: "En attente",
+                progress: 0
+            }
+        }
+    });
+});
+
+// Route pour enseignants
+app.get('/api/teacher/dashboard', authenticate, authorize('teacher'), (req, res) => {
+    res.json({
+        success: true,
+        message: "Dashboard enseignant",
+        user: req.user,
+        data: {
+            subjects: [],
+            students: [],
+            pendingApplications: 0
+        }
+    });
+});
+
+// Route pour administrateurs
+app.get('/api/admin/dashboard', authenticate, authorize('admin'), (req, res) => {
+    res.json({
+        success: true,
+        message: "Dashboard administrateur",
+        user: req.user,
+        data: {
+            totalUsers: 0,
+            totalSubjects: 0,
+            systemStatus: "Operational"
+        }
+    });
+});
 
 // Gestion des erreurs 404
 app.use((req, res) => {
@@ -96,6 +145,7 @@ app.listen(PORT, () => {
     console.log(`📅 ${new Date().toLocaleString('fr-FR')}`);
     console.log(`🔗 http://localhost:${PORT}`);
     console.log(`🔗 http://localhost:${PORT}/api/status`);
+    console.log(`👤 Test: http://localhost:${PORT}/api/auth/login`);
     
     // Vérifier la structure des dossiers
     checkDirectoryStructure();

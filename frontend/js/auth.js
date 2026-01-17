@@ -1,29 +1,51 @@
-// frontend/js/auth.js
+// ============================================
+// frontend/js/auth.js - VERSION CORRIGÉE ET PERMANENTE
+// Système d'authentification PFE FST-UNA
+// ============================================
 
-// Données de démonstration (à remplacer par l'API backend plus tard)
+// Configuration
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Données de démonstration (fallback)
 const demoUsers = {
     student: {
-        email: "etudiant.demo@etudiant.una.mr",
-        password: "demo123",
+        id: 4,
+        email: "ahmed.salem@etudiant.una.mr",
+        password: "etu123",
         name: "Ahmed Salem",
-        matricule: "MAT2025001"
+        role: "student",
+        matricule: "MAT2025001",
+        department: "Mathématiques",
+        year: "Master 1",
+        status: "active",
+        token: "demo-token-student-2025"
     },
     teacher: {
-        email: "enseignant.demo@fst.una.mr",
-        password: "demo123",
+        id: 2,
+        email: "mohamed.ouldahmed@fst.una.mr",
+        password: "prof123",
         name: "Dr. Mohamed Ould Ahmed",
-        department: "Mathématiques"
+        role: "teacher",
+        department: "Mathématiques",
+        specialization: "Analyse Mathématique",
+        status: "active",
+        token: "demo-token-teacher-2025"
     },
     admin: {
+        id: 3,
         email: "admin.pfe@fst.una.mr",
         password: "admin123",
-        name: "Administrateur Système"
+        name: "Administrateur Système",
+        role: "admin",
+        department: "Informatique",
+        status: "active",
+        token: "demo-token-admin-2025"
     }
 };
 
-// Initialisation
+// ==================== INITIALISATION ====================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔐 Module d\'authentification initialisé');
+    console.log('🔐 Module d\'authentification PFE FST-UNA initialisé');
     
     // Initialiser les composants
     initRoleSelector();
@@ -31,114 +53,72 @@ document.addEventListener('DOMContentLoaded', function() {
     initLoginForm();
     loadSavedPreferences();
     
-    // Vérifier l'état de connexion
-    checkAuthStatus();
+    // Vérifier si déjà connecté
+    checkExistingSession();
 });
 
-// Gestionnaire du sélecteur de rôle
+// ==================== SÉLECTEUR DE RÔLE ====================
 function initRoleSelector() {
     const roleOptions = document.querySelectorAll('.role-option');
     const roleInput = document.getElementById('userRole');
     
-    // Récupérer le rôle depuis l'URL ou localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlRole = urlParams.get('role');
+    if (!roleOptions.length || !roleInput) return;
+    
+    // Rôle par défaut
     const savedRole = localStorage.getItem('preferredRole') || 'student';
-    const initialRole = urlRole || savedRole;
     
     roleOptions.forEach(option => {
         const role = option.dataset.role;
         
-        // Sélectionner le rôle initial
-        if (role === initialRole) {
+        // Sélection initiale
+        if (role === savedRole) {
             option.classList.add('active');
-            if (roleInput) roleInput.value = role;
+            roleInput.value = role;
         }
         
-        // Gérer les clics
+        // Gestion du clic
         option.addEventListener('click', function() {
-            // Retirer la classe active de toutes les options
             roleOptions.forEach(opt => opt.classList.remove('active'));
-            
-            // Ajouter la classe active à l'option cliquée
             this.classList.add('active');
-            
-            // Mettre à jour le champ caché
-            if (roleInput) roleInput.value = role;
-            
-            // Sauvegarder la préférence
+            roleInput.value = role;
             localStorage.setItem('preferredRole', role);
-            
-            // Mettre à jour le placeholder de l'email
             updateEmailPlaceholder(role);
-            
-            console.log(`👤 Rôle sélectionné: ${role}`);
         });
     });
     
-    // Mettre à jour le placeholder initial
-    updateEmailPlaceholder(initialRole);
+    updateEmailPlaceholder(savedRole);
 }
 
-// Mettre à jour le placeholder de l'email selon le rôle
 function updateEmailPlaceholder(role) {
     const emailInput = document.getElementById('email');
     if (!emailInput) return;
     
-    switch(role) {
-        case 'student':
-            emailInput.placeholder = "prenom.nom@etudiant.una.mr";
-            break;
-        case 'teacher':
-            emailInput.placeholder = "prenom.nom@fst.una.mr";
-            break;
-        case 'admin':
-            emailInput.placeholder = "admin@fst.una.mr";
-            break;
-    }
+    const placeholders = {
+        student: "prenom.nom@etudiant.una.mr",
+        teacher: "prenom.nom@fst.una.mr",
+        admin: "admin@fst.una.mr"
+    };
+    
+    emailInput.placeholder = placeholders[role] || "email@una.mr";
 }
 
-// Basculer la visibilité du mot de passe
+// ==================== TOGGLE MOT DE PASSE ====================
 function initPasswordToggle() {
-    const toggleButton = document.getElementById('togglePassword');
+    const toggleBtn = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     
-    if (toggleButton && passwordInput) {
-        toggleButton.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
             
-            // Changer l'icône
             const icon = this.querySelector('i');
-            if (type === 'password') {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
         });
     }
 }
 
-// Charger les préférences sauvegardées
-function loadSavedPreferences() {
-    const rememberMe = localStorage.getItem('rememberLogin') === 'true';
-    const savedEmail = localStorage.getItem('savedEmail');
-    
-    const rememberCheckbox = document.getElementById('rememberMe');
-    const emailInput = document.getElementById('email');
-    
-    if (rememberCheckbox) {
-        rememberCheckbox.checked = rememberMe;
-    }
-    
-    if (emailInput && savedEmail) {
-        emailInput.value = savedEmail;
-    }
-}
-
-// Initialiser le formulaire de connexion
+// ==================== FORMULAIRE DE CONNEXION ====================
 function initLoginForm() {
     const loginForm = document.getElementById('loginForm');
     
@@ -146,261 +126,300 @@ function initLoginForm() {
     
     loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
+        event.stopPropagation();
         
-        // Récupérer les données du formulaire
+        // Récupérer les données
         const formData = {
             email: document.getElementById('email').value.trim(),
             password: document.getElementById('password').value,
             role: document.getElementById('userRole').value,
-            rememberMe: document.getElementById('rememberMe').checked
+            rememberMe: document.getElementById('rememberMe')?.checked || false
         };
         
-        // Valider le formulaire
-        if (!validateLoginForm(formData)) {
+        // Validation
+        if (!validateForm(formData)) {
             return;
         }
         
-        // Sauvegarder les préférences
-        if (formData.rememberMe) {
-            localStorage.setItem('rememberLogin', 'true');
-            localStorage.setItem('savedEmail', formData.email);
-        } else {
-            localStorage.removeItem('rememberLogin');
-            localStorage.removeItem('savedEmail');
-        }
+        // Sauvegarder préférences
+        savePreferences(formData);
         
-        // Afficher l'état de chargement
-        const submitButton = loginForm.querySelector('button[type="submit"]');
-        const originalText = submitButton.innerHTML;
-        submitButton.innerHTML = '<span class="loading-spinner"></span> Connexion en cours...';
-        submitButton.disabled = true;
+        // Désactiver le bouton
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+        submitBtn.disabled = true;
         
         try {
             // Essayer d'abord l'API backend
-            await attemptBackendLogin(formData);
-        } catch (error) {
-            // Fallback: mode démo
-            console.log('🔶 Utilisation du mode démo (backend non disponible)');
-            simulateDemoLogin(formData);
+            await loginWithAPI(formData);
+        } catch (apiError) {
+            console.log('⚠️ Fallback au mode démo');
+            await loginWithDemo(formData);
         } finally {
-            // Restaurer le bouton
-            submitButton.innerHTML = originalText;
-            submitButton.disabled = false;
+            // Réactiver le bouton
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
     });
 }
 
-// Valider le formulaire
-function validateLoginForm(formData) {
+// ==================== VALIDATION ====================
+function validateForm(formData) {
+    let isValid = true;
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    let isValid = true;
     
-    // Réinitialiser les états de validation
-    emailInput.classList.remove('invalid-field', 'valid-field');
-    passwordInput.classList.remove('invalid-field', 'valid-field');
+    // Réinitialiser
+    emailInput?.classList.remove('invalid-field', 'valid-field');
+    passwordInput?.classList.remove('invalid-field', 'valid-field');
     
-    // Valider l'email
-    const emailPattern = /[a-zA-Z0-9._%+-]+@(etudiant\.)?(fst\.)?una\.mr/;
+    // Valider email
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(formData.email)) {
-        showMessage('Veuillez utiliser une adresse email UNA valide (@etudiant.una.mr ou @fst.una.mr)', 'error');
-        emailInput.classList.add('invalid-field');
+        showMessage('Adresse email invalide', 'error');
+        emailInput?.classList.add('invalid-field');
         isValid = false;
     } else {
-        emailInput.classList.add('valid-field');
+        emailInput?.classList.add('valid-field');
     }
     
-    // Valider le mot de passe
+    // Valider mot de passe
     if (formData.password.length < 6) {
         showMessage('Le mot de passe doit contenir au moins 6 caractères', 'error');
-        passwordInput.classList.add('invalid-field');
+        passwordInput?.classList.add('invalid-field');
         isValid = false;
     } else {
-        passwordInput.classList.add('valid-field');
+        passwordInput?.classList.add('valid-field');
     }
     
     return isValid;
 }
 
-// Tenter une connexion via l'API backend
-async function attemptBackendLogin(formData) {
+// ==================== CONNEXION API ====================
+async function loginWithAPI(formData) {
+    console.log('🌐 Tentative de connexion via API...');
+    
     try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: formData.email,
+                password: formData.password,
+                role: formData.role
+            })
         });
         
-        if (response.ok) {
-            const data = await response.json();
-            handleSuccessfulLogin(data);
-        } else {
-            throw new Error('Identifiants incorrects');
+        console.log('📊 Réponse API:', response.status);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erreur de connexion');
         }
+        
+        const data = await response.json();
+        console.log('✅ Connexion API réussie:', data);
+        
+        if (data.success && data.user && data.token) {
+            handleSuccessfulLogin({
+                ...data.user,
+                token: data.token
+            });
+        } else {
+            throw new Error('Données de connexion incomplètes');
+        }
+        
     } catch (error) {
-        // Relancer l'erreur pour le fallback
-        throw error;
+        console.error('❌ Erreur API:', error);
+        throw error; // Propage pour le fallback
     }
 }
 
-// Simulation de connexion (mode démo)
-function simulateDemoLogin(formData) {
+// ==================== CONNEXION DÉMO ====================
+async function loginWithDemo(formData) {
+    console.log('🎭 Utilisation du mode démo...');
+    
     // Simuler un délai réseau
-    setTimeout(() => {
-        const demoUser = demoUsers[formData.role];
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    const demoUser = demoUsers[formData.role];
+    
+    if (demoUser && 
+        formData.email.toLowerCase() === demoUser.email.toLowerCase() && 
+        formData.password === demoUser.password) {
         
-        if (demoUser && 
-            formData.email === demoUser.email && 
-            formData.password === demoUser.password) {
-            
-            // Connexion réussie en mode démo
-            const userData = {
-                ...demoUser,
-                token: 'demo-token-' + Date.now(),
-                timestamp: new Date().toISOString()
-            };
-            
-            handleSuccessfulLogin(userData);
-        } else {
-            // Identifiants incorrects
-            showMessage('Email ou mot de passe incorrect', 'error');
-            
-            // Ajouter des effets visuels
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            
-            emailInput.classList.add('invalid-field');
-            passwordInput.classList.add('invalid-field');
-            
-            // Animation de secousse
-            emailInput.style.animation = 'shake 0.5s';
-            passwordInput.style.animation = 'shake 0.5s';
-            
-            setTimeout(() => {
-                emailInput.style.animation = '';
-                passwordInput.style.animation = '';
-            }, 500);
-        }
-    }, 800);
+        console.log('✅ Connexion démo réussie');
+        handleSuccessfulLogin(demoUser);
+        
+    } else {
+        showMessage('Identifiants incorrects', 'error');
+        shakeForm();
+    }
 }
 
-// Gérer une connexion réussie
+// ==================== GESTION CONNEXION RÉUSSIE ====================
 function handleSuccessfulLogin(userData) {
-    // Sauvegarder les données utilisateur
-    sessionStorage.setItem('pfe_user', JSON.stringify(userData));
-    localStorage.setItem('lastLogin', new Date().toISOString());
+    console.log('🎉 CONNEXION RÉUSSIE - Données:', userData);
     
-    // Afficher le message de succès
+    // 1. Sauvegarder les données
+    sessionStorage.setItem('pfe_user', JSON.stringify(userData));
+    sessionStorage.setItem('pfe_token', userData.token);
+    localStorage.setItem('last_login', new Date().toISOString());
+    
+    // 2. Afficher message
     showMessage(`Connexion réussie ! Bienvenue ${userData.name}`, 'success');
     
-    // Rediriger vers le tableau de bord approprié
-    console.log(`✅ Connexion réussie: ${userData.name} (${userData.role})`);
+    // 3. Déterminer la page de destination
+    const dashboardPages = {
+        student: 'dashboard-student.html',
+        teacher: 'dashboard-teacher.html',
+        admin: 'dashboard-admin.html'
+    };
     
-    // Simulation de redirection
+    const redirectPage = dashboardPages[userData.role] || 'index.html';
+    
+    // 4. Rediriger après délai
     setTimeout(() => {
-        switch(userData.role) {
-            case 'student':
-                window.location.href = 'dashboard-student.html';
-                break;
-            case 'teacher':
-                window.location.href = 'dashboard-teacher.html';
-                break;
-            case 'admin':
-                window.location.href = 'dashboard-admin.html';
-                break;
-            default:
-                window.location.href = 'index.html';
-        }
+        console.log(`🔀 Redirection vers: ${redirectPage}`);
+        window.location.href = redirectPage;
     }, 1500);
 }
 
-// Afficher un message
+// ==================== VÉRIFICATION SESSION ====================
+function checkExistingSession() {
+    const userData = sessionStorage.getItem('pfe_user');
+    const token = sessionStorage.getItem('pfe_token');
+    
+    if (userData && token) {
+        try {
+            const user = JSON.parse(userData);
+            console.log(`👤 Session existante: ${user.name} (${user.role})`);
+            
+            // Si sur login.html, suggérer la redirection
+            if (window.location.pathname.includes('login.html')) {
+                setTimeout(() => {
+                    if (confirm(`Vous êtes déjà connecté en tant que ${user.name}. Voulez-vous aller à votre tableau de bord ?`)) {
+                        const dashboardPages = {
+                            student: 'dashboard-student.html',
+                            teacher: 'dashboard-teacher.html',
+                            admin: 'dashboard-admin.html'
+                        };
+                        window.location.href = dashboardPages[user.role] || 'index.html';
+                    }
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('❌ Erreur session:', error);
+            clearSession();
+        }
+    }
+}
+
+// ==================== UTILITAIRES ====================
+function loadSavedPreferences() {
+    const rememberMe = localStorage.getItem('rememberLogin') === 'true';
+    const savedEmail = localStorage.getItem('savedEmail');
+    
+    const rememberCheckbox = document.getElementById('rememberMe');
+    const emailInput = document.getElementById('email');
+    
+    if (rememberCheckbox) rememberCheckbox.checked = rememberMe;
+    if (emailInput && savedEmail) emailInput.value = savedEmail;
+}
+
+function savePreferences(formData) {
+    if (formData.rememberMe) {
+        localStorage.setItem('rememberLogin', 'true');
+        localStorage.setItem('savedEmail', formData.email);
+    } else {
+        localStorage.removeItem('rememberLogin');
+        localStorage.removeItem('savedEmail');
+    }
+}
+
+function shakeForm() {
+    const inputs = document.querySelectorAll('.form-group input');
+    inputs.forEach(input => {
+        input.style.animation = 'shake 0.5s';
+        setTimeout(() => input.style.animation = '', 500);
+    });
+}
+
+function clearSession() {
+    sessionStorage.removeItem('pfe_user');
+    sessionStorage.removeItem('pfe_token');
+}
+
+// ==================== AFFICHAGE MESSAGES ====================
 function showMessage(text, type = 'info') {
     const messageBox = document.getElementById('messageBox');
     const messageText = document.getElementById('messageText');
     
-    if (!messageBox || !messageText) return;
+    if (!messageBox || !messageText) {
+        // Créer un message temporaire
+        const tempMsg = document.createElement('div');
+        tempMsg.className = `temp-message ${type}`;
+        tempMsg.innerHTML = `
+            <i class="fas fa-${getMessageIcon(type)}"></i>
+            <span>${text}</span>
+        `;
+        
+        tempMsg.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+            background-color: ${getMessageColor(type)};
+        `;
+        
+        document.body.appendChild(tempMsg);
+        
+        setTimeout(() => {
+            tempMsg.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => tempMsg.remove(), 300);
+        }, 5000);
+        
+        return;
+    }
     
-    // Mettre à jour le contenu
+    // Utiliser la boîte de message existante
     messageText.textContent = text;
-    
-    // Mettre à jour le type
-    messageBox.className = 'message-box ' + type;
+    messageBox.className = `message-box ${type}`;
     messageBox.classList.remove('hidden');
     
-    // Masquer après 5 secondes pour les messages info/success
     if (type !== 'error') {
-        setTimeout(() => {
-            messageBox.classList.add('hidden');
-        }, 5000);
+        setTimeout(() => messageBox.classList.add('hidden'), 5000);
     }
 }
 
-// Vérifier l'état d'authentification
-function checkAuthStatus() {
-    const userData = sessionStorage.getItem('pfe_user');
-    
-    if (userData) {
-        try {
-            const user = JSON.parse(userData);
-            console.log(`👤 Utilisateur déjà connecté: ${user.name}`);
-            
-            // Rediriger si nécessaire
-            if (!window.location.href.includes('dashboard')) {
-                showMessage(`Vous êtes déjà connecté en tant que ${user.name}`, 'info');
-            }
-        } catch (error) {
-            console.error('Erreur de parsing des données utilisateur:', error);
-            sessionStorage.removeItem('pfe_user');
-        }
-    }
+function getMessageIcon(type) {
+    const icons = {
+        success: 'check-circle',
+        error: 'exclamation-circle',
+        warning: 'exclamation-triangle',
+        info: 'info-circle'
+    };
+    return icons[type] || 'info-circle';
 }
 
-// Déconnexion (fonction utilitaire)
-function logout() {
-    sessionStorage.removeItem('pfe_user');
-    localStorage.removeItem('lastLogin');
-    window.location.href = 'login.html';
+function getMessageColor(type) {
+    const colors = {
+        success: '#28a745',
+        error: '#dc3545',
+        warning: '#ffc107',
+        info: '#17a2b8'
+    };
+    return colors[type] || '#17a2b8';
 }
 
-// Vérifier les permissions
-function checkPermission(requiredRole) {
-    const userData = sessionStorage.getItem('pfe_user');
-    
-    if (!userData) {
-        window.location.href = 'login.html';
-        return false;
-    }
-    
-    try {
-        const user = JSON.parse(userData);
-        if (user.role !== requiredRole && user.role !== 'admin') {
-            showMessage('Vous n\'avez pas les permissions nécessaires', 'error');
-            return false;
-        }
-        return true;
-    } catch (error) {
-        window.location.href = 'login.html';
-        return false;
-    }
-}
-
-// Exporter les fonctions pour une utilisation externe
-window.AuthModule = {
-    logout,
-    checkPermission,
-    getUser: function() {
-        const userData = sessionStorage.getItem('pfe_user');
-        return userData ? JSON.parse(userData) : null;
-    },
-    isAuthenticated: function() {
-        return !!sessionStorage.getItem('pfe_user');
-    }
-};
-
-// Ajouter l'animation de secousse au CSS
+// ==================== ANIMATIONS CSS ====================
 const style = document.createElement('style');
 style.textContent = `
     @keyframes shake {
@@ -408,5 +427,59 @@ style.textContent = `
         10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
         20%, 40%, 60%, 80% { transform: translateX(5px); }
     }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    .temp-message {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 `;
 document.head.appendChild(style);
+
+// ==================== EXPORT POUR CONSOLE ====================
+window.AuthSystem = {
+    testLogin: function(role = 'student') {
+        const credentials = {
+            student: { email: 'ahmed.salem@etudiant.una.mr', password: 'etu123' },
+            teacher: { email: 'mohamed.ouldahmed@fst.una.mr', password: 'prof123' },
+            admin: { email: 'admin.pfe@fst.una.mr', password: 'admin123' }
+        };
+        
+        const creds = credentials[role];
+        if (creds) {
+            document.getElementById('email').value = creds.email;
+            document.getElementById('password').value = creds.password;
+            document.getElementById('userRole').value = role;
+            
+            // Sélectionner le rôle visuellement
+            document.querySelectorAll('.role-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.role === role);
+            });
+            
+            console.log(`🔧 Auto-remplissage pour ${role}`);
+        }
+    },
+    
+    clearSession: function() {
+        clearSession();
+        localStorage.removeItem('last_login');
+        console.log('🧹 Session nettoyée');
+    },
+    
+    getCurrentUser: function() {
+        const userData = sessionStorage.getItem('pfe_user');
+        return userData ? JSON.parse(userData) : null;
+    }
+};
+
+console.log('✅ AuthSystem prêt. Utilisez AuthSystem.testLogin("student") pour tester.');

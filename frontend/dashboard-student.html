@@ -483,5 +483,25 @@
     <!-- Scripts -->
     <script src="js/auth.js"></script>
     <script src="js/dashboard-student.js"></script>
+    <script src="js/global-auth.js"></script>
+<script>
+    // Afficher le nom de l'utilisateur
+    document.addEventListener('DOMContentLoaded', function() {
+        const userData = sessionStorage.getItem('pfe_user');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                const userNameElements = document.querySelectorAll('#userName, .user-name');
+                userNameElements.forEach(el => {
+                    if (el.id === 'userName' || el.classList.contains('user-name')) {
+                        el.textContent = user.name;
+                    }
+                });
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+    });
+</script>
 </body>
 </html>

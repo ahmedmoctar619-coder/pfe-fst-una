@@ -5,9 +5,46 @@ const router = express.Router();
 const User = require('../models/User');
 const { generateToken, authenticate } = require('../middlewares/auth');
 
-// Connexion
+// ===== ROUTE GET POUR TEST (à retirer en production) =====
+router.get('/login', (req, res) => {
+    res.json({
+        success: true,
+        message: "API d'authentification PFE FST-UNA",
+        instructions: "Utilisez POST pour vous connecter",
+        test_credentials: {
+            student: {
+                email: "ahmed.salem@etudiant.una.mr",
+                password: "etu123"
+            },
+            teacher: {
+                email: "mohamed.ouldahmed@fst.una.mr",
+                password: "prof123"
+            },
+            admin: {
+                email: "admin.pfe@fst.una.mr",
+                password: "admin123"
+            }
+        },
+        example_post: {
+            method: "POST",
+            url: "/api/auth/login",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: {
+                email: "ahmed.salem@etudiant.una.mr",
+                password: "etu123",
+                role: "student"
+            }
+        }
+    });
+});
+
+// ===== ROUTE POST POUR LA CONNEXION =====
 router.post('/login', async (req, res) => {
     try {
+        console.log('📨 Requête de connexion reçue:', req.body);
+        
         const { email, password, role } = req.body;
         
         // Validation
@@ -20,6 +57,7 @@ router.post('/login', async (req, res) => {
         
         // Chercher l'utilisateur
         const user = await User.findByEmail(email);
+        console.log('👤 Utilisateur trouvé:', user ? 'Oui' : 'Non');
         
         if (!user) {
             return res.status(401).json({
@@ -32,7 +70,7 @@ router.post('/login', async (req, res) => {
         if (role && user.role !== role) {
             return res.status(401).json({
                 success: false,
-                message: "Accès non autorisé pour ce rôle"
+                message: `Accès non autorisé. Votre rôle est: ${user.role}`
             });
         }
         
@@ -46,6 +84,7 @@ router.post('/login', async (req, res) => {
         
         // Vérifier le mot de passe
         const isValidPassword = await User.verifyPassword(password, user.password);
+        console.log('🔐 Mot de passe valide:', isValidPassword);
         
         if (!isValidPassword) {
             return res.status(401).json({
@@ -60,6 +99,8 @@ router.post('/login', async (req, res) => {
         // Créer la réponse (sans mot de passe)
         const { password: _, ...userWithoutPassword } = user;
         
+        console.log('✅ Connexion réussie pour:', user.email);
+        
         res.json({
             success: true,
             message: "Connexion réussie",
@@ -73,7 +114,8 @@ router.post('/login', async (req, res) => {
         console.error('❌ Erreur connexion:', error);
         res.status(500).json({
             success: false,
-            message: "Erreur serveur lors de la connexion"
+            message: "Erreur serveur lors de la connexion",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });

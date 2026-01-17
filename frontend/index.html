@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Suivi PFE - FST UNA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- En-tête -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logos">
+                    <div class="logo-container">
+                        <img src="assets/logo-una.png" alt="Logo UNA" class="logo" id="logo-una">
+                        <span class="logo-text">UNA</span>
+                    </div>
+                    <div class="logo-container">
+                        <img src="assets/logo-fst.png" alt="Logo FST" class="logo" id="logo-fst">
+                        <span class="logo-text">FST</span>
+                    </div>
+                </div>
+                <div class="header-title">
+                    <h1><i class="fas fa-graduation-cap"></i> Système de Suivi des PFE</h1>
+                    <p class="subtitle">Faculté des Sciences et Techniques - Université Nouakchott Al Aasriya</p>
+                    <p class="academic-year">Année académique 2025-2026 | Département de Mathématiques</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                <li><a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> À propos</a></li>
+                <li><a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="container">
+        <!-- Section Hero -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2>Bienvenue sur la plateforme de gestion des Projets de Fin d'Études</h2>
+                <p class="hero-description">
+                    Cette plateforme digitale a été conçue pour faciliter la gestion, le suivi et l'évaluation 
+                    des projets de fin d'études au département de Mathématiques de la FST-UNA.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="stat-projects">0</span>
+                        <span class="stat-label">Sujets disponibles</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="stat-students">0</span>
+                        <span class="stat-label">Étudiants inscrits</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="stat-teachers">0</span>
+                        <span class="stat-label">Enseignants actifs</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Rôles -->
+        <section class="roles-section">
+            <h2><i class="fas fa-users"></i> Accès par profil</h2>
+            <div class="roles-grid">
+                <!-- Carte Étudiant -->
+                <div class="role-card student-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Étudiant</h3>
+                    <ul class="role-features">
+                        <li><i class="fas fa-check-circle"></i> Consulter les sujets disponibles</li>
+                        <li><i class="fas fa-check-circle"></i> Postuler à un sujet de PFE</li>
+                        <li><i class="fas fa-check-circle"></i> Déposer vos livrables en ligne</li>
+                        <li><i class="fas fa-check-circle"></i> Suivre l'avancement de votre projet</li>
+                    </ul>
+                    <a href="login.html?role=student" class="btn btn-student">
+                        <i class="fas fa-sign-in-alt"></i> Espace étudiant
+                    </a>
+                </div>
+
+                <!-- Carte Enseignant -->
+                <div class="role-card teacher-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Enseignant</h3>
+                    <ul class="role-features">
+                        <li><i class="fas fa-check-circle"></i> Proposer des sujets de PFE</li>
+                        <li><i class="fas fa-check-circle"></i> Valider les inscriptions étudiantes</li>
+                        <li><i class="fas fa-check-circle"></i> Suivre l'avancement des projets</li>
+                        <li><i class="fas fa-check-circle"></i> Évaluer les livrables</li>
+                    </ul>
+                    <a href="login.html?role=teacher" class="btn btn-teacher">
+                        <i class="fas fa-sign-in-alt"></i> Espace enseignant
+                    </a>
+                </div>
+
+                <!-- Carte Administrateur -->
+                <div class="role-card admin-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3>Administrateur</h3>
+                    <ul class="role-features">
+                        <li><i class="fas fa-check-circle"></i> Gérer les comptes utilisateurs</li>
+                        <li><i class="fas fa-check-circle"></i> Générer des statistiques</li>
+                        <li><i class="fas fa-check-circle"></i> Planifier les soutenances</li>
+                        <li><i class="fas fa-check-circle"></i> Configurer la plateforme</li>
+                    </ul>
+                    <a href="login.html?role=admin" class="btn btn-admin">
+                        <i class="fas fa-sign-in-alt"></i> Espace administrateur
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section À propos -->
+        <section id="about" class="about-section">
+            <h2><i class="fas fa-info-circle"></i> À propos du système</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Objectifs de la plateforme</h3>
+                    <p>
+                        Ce système a été développé pour digitaliser le processus de gestion des Projets de Fin d'Études
+                        au département de Mathématiques de la FST-UNA. Il vise à :
+                    </p>
+                    <ul>
+                        <li>Centraliser l'offre de sujets de PFE</li>
+                        <li>Faciliter l'inscription et le suivi des étudiants</li>
+                        <li>Automatiser les notifications et rappels</li>
+                        <li>Fournir des statistiques aux responsables</li>
+                        <li>Assurer une traçabilité complète des projets</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <!-- Image illustrative (placeholder) -->
+                    <div class="image-placeholder">
+                        <i class="fas fa-laptop-code"></i>
+                        <p>Interface moderne et intuitive</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-university"></i> UNA - FST</h4>
+                    <p>Université Nouakchott Al Aasriya</p>
+                    <p>Faculté des Sciences et Techniques</p>
+                    <p>Département de Mathématiques</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-map-marker-alt"></i> Contact</h4>
+                    <p>Faculté des Sciences et Techniques</p>
+                    <p>Université Nouakchott Al Aasriya</p>
+                    <p>Nouakchott, Mauritanie</p>
+                    <p>Email: pfe.math@fst.una.mr</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-link"></i> Liens utiles</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-external-link-alt"></i> Site UNA</a></li>
+                        <li><a href="#"><i class="fas fa-external-link-alt"></i> Site FST</a></li>
+                        <li><a href="#"><i class="fas fa-file-pdf"></i> Guide étudiant</a></li>
+                        <li><a href="#"><i class="fas fa-file-pdf"></i> Guide enseignant</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 FST-UNA - Département de Mathématiques. Tous droits réservés.</p>
+                <p class="version">Plateforme de suivi des PFE - Version 1.0.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+</html>

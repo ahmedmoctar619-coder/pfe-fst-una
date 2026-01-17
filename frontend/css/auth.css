@@ -1,0 +1,406 @@
+/* ===== AUTHENTIFICATION STYLES ===== */
+
+/* Conteneur principal */
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin: var(--spacing-xl) 0;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .login-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Carte de connexion */
+.login-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-medium);
+    border-top: 5px solid var(--secondary-blue);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.login-header h2 {
+    color: var(--primary-blue);
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+}
+
+.login-header p {
+    color: var(--dark-gray);
+    opacity: 0.8;
+}
+
+/* Sélecteur de rôle */
+.role-selector {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+    background-color: var(--light-gray);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+.role-option {
+    flex: 1;
+    text-align: center;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.role-option:hover {
+    background-color: var(--white);
+    border-color: var(--medium-gray);
+}
+
+.role-option.active {
+    background-color: var(--white);
+    border-color: var(--secondary-blue);
+    box-shadow: var(--shadow-light);
+}
+
+.role-option[data-role="student"].active {
+    border-color: var(--success);
+}
+
+.role-option[data-role="teacher"].active {
+    border-color: var(--info);
+}
+
+.role-option[data-role="admin"].active {
+    border-color: var(--warning);
+}
+
+.role-icon {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--primary-blue);
+}
+
+.role-option[data-role="student"] .role-icon {
+    color: var(--success);
+}
+
+.role-option[data-role="teacher"] .role-icon {
+    color: var(--info);
+}
+
+.role-option[data-role="admin"] .role-icon {
+    color: var(--warning);
+}
+
+.role-option span {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+/* Formulaire */
+.login-form {
+    margin-top: var(--spacing-lg);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--secondary-blue);
+    box-shadow: 0 0 0 3px rgba(30, 109, 182, 0.1);
+}
+
+.form-group input:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: var(--danger);
+}
+
+.form-hint {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    opacity: 0.7;
+}
+
+/* Container mot de passe */
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--dark-gray);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    font-size: 1rem;
+}
+
+.toggle-password:hover {
+    color: var(--secondary-blue);
+}
+
+/* Options du formulaire */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.forgot-password {
+    color: var(--secondary-blue);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Bouton de connexion */
+.btn-login {
+    width: 100%;
+    padding: var(--spacing-md);
+    font-size: 1.1rem;
+    background-color: var(--secondary-blue);
+    margin-bottom: var(--spacing-md);
+}
+
+.btn-login:hover {
+    background-color: var(--primary-blue);
+}
+
+/* Pied du formulaire */
+.form-footer {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--medium-gray);
+}
+
+.form-footer p {
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.9rem;
+}
+
+.form-footer a {
+    color: var(--secondary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Boîte de message */
+.message-box {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-box.hidden {
+    display: none;
+}
+
+.message-box.success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid var(--success);
+    color: #155724;
+}
+
+.message-box.error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid var(--danger);
+    color: #721c24;
+}
+
+.message-box.info {
+    background-color: rgba(23, 162, 184, 0.1);
+    border: 1px solid var(--info);
+    color: #0c5460;
+}
+
+.message-box i {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.message-box.success i {
+    color: var(--success);
+}
+
+.message-box.error i {
+    color: var(--danger);
+}
+
+.message-box.info i {
+    color: var(--info);
+}
+
+/* Panneau d'informations */
+.login-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.info-card, .help-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-light);
+}
+
+.info-card h3, .help-card h3 {
+    color: var(--primary-blue);
+    font-size: 1.4rem;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.info-list {
+    list-style: none;
+}
+
+.info-list li {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.info-list i {
+    color: var(--success);
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.info-list strong {
+    color: var(--primary-blue);
+}
+
+.help-contacts {
+    list-style: none;
+    margin-bottom: var(--spacing-lg);
+}
+
+.help-contacts li {
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.help-contacts i {
+    color: var(--secondary-blue);
+    width: 20px;
+    text-align: center;
+}
+
+.btn-secondary {
+    background-color: var(--light-gray);
+    color: var(--dark-gray);
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    background-color: var(--medium-gray);
+}
+
+/* États de validation */
+.valid-field {
+    border-color: var(--success) !important;
+}
+
+.invalid-field {
+    border-color: var(--danger) !important;
+}
+
+/* Animation de chargement */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--white);
+    animation: spin 1s ease-in-out infinite;
+    margin-right: var(--spacing-xs);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

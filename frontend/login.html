@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Système PFE FST UNA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- En-tête (identique à l'accueil) -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logos">
+                    <div class="logo-container">
+                        <img src="assets/logo-una.png" alt="Logo UNA" class="logo" id="logo-una">
+                        <span class="logo-text">UNA</span>
+                    </div>
+                    <div class="logo-container">
+                        <img src="assets/logo-fst.png" alt="Logo FST" class="logo" id="logo-fst">
+                        <span class="logo-text">FST</span>
+                    </div>
+                </div>
+                <div class="header-title">
+                    <h1><i class="fas fa-graduation-cap"></i> Système de Suivi des PFE</h1>
+                    <p class="subtitle">Faculté des Sciences et Techniques - Université Nouakchott Al Aasriya</p>
+                    <p class="academic-year">Année académique 2025-2026 | Département de Mathématiques</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="login.html" class="nav-link active"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                <li><a href="#help" class="nav-link"><i class="fas fa-question-circle"></i> Aide</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="container">
+        <div class="login-container">
+            <!-- Panneau de connexion -->
+            <div class="login-card">
+                <div class="login-header">
+                    <h2><i class="fas fa-lock"></i> Connexion à la plateforme</h2>
+                    <p>Veuillez sélectionner votre profil et saisir vos identifiants</p>
+                </div>
+
+                <!-- Sélecteur de rôle -->
+                <div class="role-selector">
+                    <div class="role-option" data-role="student">
+                        <div class="role-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <span>Étudiant</span>
+                    </div>
+                    <div class="role-option" data-role="teacher">
+                        <div class="role-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <span>Enseignant</span>
+                    </div>
+                    <div class="role-option" data-role="admin">
+                        <div class="role-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <span>Administrateur</span>
+                    </div>
+                </div>
+
+                <!-- Formulaire de connexion -->
+                <form id="loginForm" class="login-form">
+                    <input type="hidden" id="userRole" name="role" value="student">
+                    
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Adresse email universitaire
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="prenom.nom@etudiant.una.mr ou prenom.nom@fst.una.mr" 
+                            required
+                            pattern="[a-zA-Z0-9._%+-]+@(etudiant\.)?(fst\.)?una\.mr"
+                            title="Veuillez utiliser votre email universitaire UNA">
+                        <small class="form-hint">
+                            Format: prenom.nom@etudiant.una.mr (étudiant) ou prenom.nom@fst.una.mr (enseignant)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-key"></i> Mot de passe
+                        </label>
+                        <div class="password-container">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Votre mot de passe" 
+                                required
+                                minlength="6">
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="form-hint">
+                            Minimum 6 caractères
+                        </small>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a href="#forgot-password" class="forgot-password">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+
+                    <button type="submit" class="btn btn-login">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </button>
+
+                    <div class="form-footer">
+                        <p>Première connexion ? <a href="#first-connection">Activez votre compte</a></p>
+                        <p>Problème de connexion ? <a href="#contact-support">Contactez le support</a></p>
+                    </div>
+                </form>
+
+                <!-- Message d'erreur/succès -->
+                <div id="messageBox" class="message-box hidden">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="messageText"></span>
+                </div>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="login-info">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Informations importantes</h3>
+                    <ul class="info-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Étudiants :</strong> Utilisez votre email étudiant (@etudiant.una.mr)
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Enseignants :</strong> Utilisez votre email professionnel (@fst.una.mr)
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Première connexion :</strong> Votre mot de passe est votre numéro d'inscription
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Sécurité :</strong> Changez votre mot de passe après la première connexion
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="help-card">
+                    <h3><i class="fas fa-question-circle"></i> Besoin d'aide ?</h3>
+                    <p>Pour toute assistance technique :</p>
+                    <ul class="help-contacts">
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <strong>Email :</strong> support.pfe@fst.una.mr
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <strong>Téléphone :</strong> +222 45 XX XX XX
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <strong>Horaires :</strong> 8h-16h, du lundi au jeudi
+                        </li>
+                    </ul>
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-university"></i> UNA - FST</h4>
+                    <p>Université Nouakchott Al Aasriya</p>
+                    <p>Faculté des Sciences et Techniques</p>
+                    <p>Département de Mathématiques</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-shield-alt"></i> Sécurité</h4>
+                    <p>Cette plateforme utilise des technologies sécurisées</p>
+                    <p>Vos données sont protégées</p>
+                    <p>Conformité RGPD</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-link"></i> Accès rapide</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Page d'accueil</a></li>
+                        <li><a href="#guide"><i class="fas fa-book"></i> Guide utilisateur</a></li>
+                        <li><a href="#confidentiality"><i class="fas fa-user-shield"></i> Confidentialité</a></li>
+                        <li><a href="#terms"><i class="fas fa-file-contract"></i> Conditions d'utilisation</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 FST-UNA - Département de Mathématiques. Tous droits réservés.</p>
+                <p class="version">Module d'authentification - Version 1.0.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+</body>
+</html>

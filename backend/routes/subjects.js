@@ -2,6 +2,97 @@
 
 const express = require('express');
 const router = express.Router();
+const Subject = require('../models/Subject');
+
+// Récupérer tous les sujets
+router.get('/', async (req, res) => {
+    try {
+        const filters = {
+            status: req.query.status,
+            specialization: req.query.specialization,
+            available_only: req.query.available === 'true',
+            limit: parseInt(req.query.limit) || 100
+        };
+        
+        const subjects = await Subject.findAll(filters);
+        
+        res.json({
+            success: true,
+            count: subjects.length,
+            subjects: subjects
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur récupération sujets:', error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur lors de la récupération des sujets"
+        });
+    }
+});
+
+// Récupérer un sujet par ID
+router.get('/:id', async (req, res) => {
+    try {
+        const subject = await Subject.findById(req.params.id);
+        
+        if (!subject) {
+            return res.status(404).json({
+                success: false,
+                message: "Sujet non trouvé"
+            });
+        }
+        
+        res.json({
+            success: true,
+            subject: subject
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur récupération sujet:', error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur lors de la récupération du sujet"
+        });
+    }
+});
+
+// Créer un nouveau sujet
+router.post('/', async (req, res) => {
+    try {
+        const { title, description, teacher_id, requirements, capacity } = req.body;
+        
+        if (!title || !description || !teacher_id) {
+            return res.status(400).json({
+                success: false,
+                message: "Titre, description et enseignant sont requis"
+            });
+        }
+        
+        const subjectData = {
+            title,
+            description,
+            teacher_id,
+            requirements: requirements || "Aucune exigence particulière",
+            capacity: capacity || 2
+        };
+        
+        const newSubject = await Subject.create(subjectData);
+        
+        res.status(201).json({
+            success: true,
+            message: "Sujet créé avec succès",
+            subject: newSubject
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur création sujet:', error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur lors de la création du sujet"
+        });
+    }
+});
 
 // Données temporaires
 let subjects = [

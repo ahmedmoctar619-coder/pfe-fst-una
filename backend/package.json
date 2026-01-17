@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "init-db": "node database/init.js",
+    "reset-db": "rm -f database/pfe_fst_una.db && node database/init.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

@@ -25,6 +25,7 @@
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
     "express-session": "^1.18.2",
+    "jsonwebtoken": "^9.0.3",
     "multer": "^1.4.5-lts.1",
     "sqlite3": "^5.1.7"
   },

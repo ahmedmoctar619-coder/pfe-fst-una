@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const { authenticate, authorize } = require('./middlewares/auth');
 
 // Initialisation de l'application
 const app = express();
@@ -53,6 +54,13 @@ app.use('/api/auth', require('./routes/auth'));
 
 // Routes des sujets PFE
 app.use('/api/subjects', require('./routes/subjects'));
+
+// Routes protégées
+app.use('/api/protected/subjects', authenticate, authorize('teacher', 'admin'), require('./routes/protected/subjects'));
+app.use('/api/protected/users', authenticate, authorize('admin'), require('./routes/protected/users'));
+app.use('/api/protected/enrollments', authenticate, require('./routes/protected/enrollments'));
+app.use('/api/protected/student', authenticate, authorize('student'), require('./routes/protected/student'));
+app.use('/api/protected/teacher', authenticate, authorize('teacher'), require('./routes/protected/teacher'));
 
 // Routes des utilisateurs
 app.use('/api/users', require('./routes/users'));

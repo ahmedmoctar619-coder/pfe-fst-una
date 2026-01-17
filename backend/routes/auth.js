@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const { generateToken, authenticate } = require('../middlewares/auth');
 
 // Connexion
 router.post('/login', async (req, res) => {
@@ -53,6 +54,9 @@ router.post('/login', async (req, res) => {
             });
         }
         
+        // Générer le token JWT
+        const token = generateToken(user);
+        
         // Créer la réponse (sans mot de passe)
         const { password: _, ...userWithoutPassword } = user;
         
@@ -60,7 +64,8 @@ router.post('/login', async (req, res) => {
             success: true,
             message: "Connexion réussie",
             user: userWithoutPassword,
-            token: `token-${Date.now()}-${user.id}`,
+            token: token,
+            expiresIn: '8h',
             timestamp: new Date().toISOString()
         });
         
@@ -71,6 +76,81 @@ router.post('/login', async (req, res) => {
             message: "Erreur serveur lors de la connexion"
         });
     }
+});
+
+// Vérifier la session (avec token)
+router.get('/verify', authenticate, (req, res) => {
+    res.json({
+        success: true,
+        message: "Session valide",
+        user: req.user,
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Changer le mot de passe (utilisateur connecté)
+router.post('/change-password', authenticate, async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body;
+        const userId = req.user.id;
+        
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Tous les champs sont requis"
+            });
+        }
+        
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Les nouveaux mots de passe ne correspondent pas"
+            });
+        }
+        
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "Le nouveau mot de passe doit contenir au moins 6 caractères"
+            });
+        }
+        
+        // Récupérer l'utilisateur
+        const user = await User.findByEmail(req.user.email);
+        
+        // Vérifier l'ancien mot de passe
+        const isValidPassword = await User.verifyPassword(currentPassword, user.password);
+        
+        if (!isValidPassword) {
+            return res.status(401).json({
+                success: false,
+                message: "Mot de passe actuel incorrect"
+            });
+        }
+        
+        // Changer le mot de passe
+        await User.changePassword(userId, newPassword);
+        
+        res.json({
+            success: true,
+            message: "Mot de passe changé avec succès"
+        });
+        
+    } catch (error) {
+        console.error('❌ Erreur changement mot de passe:', error);
+        res.status(500).json({
+            success: false,
+            message: "Erreur serveur lors du changement de mot de passe"
+        });
+    }
+});
+
+// Déconnexion (côté client seulement - invalider le token côté client)
+router.post('/logout', authenticate, (req, res) => {
+    res.json({
+        success: true,
+        message: "Déconnexion réussie. Veuillez supprimer le token côté client."
+    });
 });
 
 // Inscription (première connexion étudiant)

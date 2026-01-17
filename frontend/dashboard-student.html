@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Étudiant - PFE FST UNA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header avec navigation -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logos">
+                        <img src="assets/logo-una.png" alt="UNA" class="logo-small">
+                        <img src="assets/logo-fst.png" alt="FST" class="logo-small">
+                    </div>
+                    <div class="header-title">
+                        <h1><i class="fas fa-user-graduate"></i> Tableau de bord Étudiant</h1>
+                        <p class="subtitle">Système de suivi PFE - Département de Mathématiques</p>
+                    </div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName">Chargement...</span>
+                            <span class="user-role">Étudiant</span>
+                            <span class="user-matricule" id="userMatricule"></span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation du dashboard -->
+    <nav class="dashboard-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="#overview" class="nav-item active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i> Vue d'ensemble
+                </a></li>
+                <li><a href="#subjects" class="nav-item" data-section="subjects">
+                    <i class="fas fa-book-open"></i> Sujets disponibles
+                </a></li>
+                <li><a href="#my-pfe" class="nav-item" data-section="my-pfe">
+                    <i class="fas fa-project-diagram"></i> Mon PFE
+                </a></li>
+                <li><a href="#deliverables" class="nav-item" data-section="deliverables">
+                    <i class="fas fa-file-upload"></i> Livrables
+                </a></li>
+                <li><a href="#calendar" class="nav-item" data-section="calendar">
+                    <i class="fas fa-calendar-alt"></i> Calendrier
+                </a></li>
+                <li><a href="#messages" class="nav-item" data-section="messages">
+                    <i class="fas fa-envelope"></i> Messages
+                    <span class="badge" id="messageCount">0</span>
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="container dashboard-container">
+        <!-- Section: Vue d'ensemble -->
+        <section id="overview" class="dashboard-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Vue d'ensemble</h2>
+                <p class="section-subtitle">Bienvenue sur votre tableau de bord PFE</p>
+            </div>
+            
+            <!-- Cartes de statistiques -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon status-pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Statut PFE</h3>
+                        <p class="stat-value" id="pfeStatus">Non attribué</p>
+                        <p class="stat-label">En attente d'attribution</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon status-submitted">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Livrables</h3>
+                        <p class="stat-value" id="deliverablesCount">0</p>
+                        <p class="stat-label">Fichiers déposés</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon status-deadline">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Échéance</h3>
+                        <p class="stat-value" id="nextDeadline">--/--/----</p>
+                        <p class="stat-label">Prochaine date limite</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon status-grade">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Moyenne</h3>
+                        <p class="stat-value" id="averageGrade">--/20</p>
+                        <p class="stat-label">Note provisoire</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progression du PFE -->
+            <div class="progress-section">
+                <h3><i class="fas fa-chart-line"></i> Progression de votre PFE</h3>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pfeProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>0%</span>
+                        <span id="progressPercent">0%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+                
+                <div class="progress-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-info">
+                            <h4>Choix du sujet</h4>
+                            <p>Sélection et validation du sujet</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Terminé</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-info">
+                            <h4>Proposition détaillée</h4>
+                            <p>Dépôt du plan détaillé</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-clock"></i>
+                            <span>En attente</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-info">
+                            <h4>Développement</h4>
+                            <p>Réalisation technique</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-clock"></i>
+                            <span>À venir</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-info">
+                            <h4>Rapport final</h4>
+                            <p>Rédaction du mémoire</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-clock"></i>
+                            <span>À venir</span>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-info">
+                            <h4>Soutenance</h4>
+                            <p>Présentation devant jury</p>
+                        </div>
+                        <div class="step-status">
+                            <i class="fas fa-clock"></i>
+                            <span>À venir</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notifications récentes -->
+            <div class="notifications-section">
+                <h3><i class="fas fa-bell"></i> Notifications récentes</h3>
+                <div class="notifications-list" id="notificationsList">
+                    <!-- Les notifications seront chargées ici -->
+                    <div class="notification loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Chargement des notifications...</span>
+                    </div>
+                </div>
+                <button class="btn-view-all" id="viewAllNotifications">
+                    Voir toutes les notifications
+                </button>
+            </div>
+        </section>
+        
+        <!-- Section: Sujets disponibles -->
+        <section id="subjects" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-book-open"></i> Sujets disponibles</h2>
+                <div class="section-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="subjectSearch" placeholder="Rechercher un sujet...">
+                    </div>
+                    <select id="subjectFilter" class="filter-select">
+                        <option value="all">Tous les sujets</option>
+                        <option value="available">Disponibles seulement</option>
+                        <option value="mathematics">Mathématiques</option>
+                        <option value="applied">Mathématiques Appliquées</option>
+                        <option value="computer">Informatique Théorique</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Liste des sujets -->
+            <div class="subjects-container" id="subjectsContainer">
+                <!-- Les sujets seront chargés dynamiquement -->
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Chargement des sujets disponibles...</p>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- La pagination sera générée dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- Section: Mon PFE -->
+        <section id="my-pfe" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-project-diagram"></i> Mon Projet de Fin d'Études</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="applySubjectBtn">
+                        <i class="fas fa-paper-plane"></i> Postuler à un sujet
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Informations du PFE -->
+            <div class="pfe-info-card" id="pfeInfoCard">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Chargement des informations de votre PFE...</p>
+                </div>
+            </div>
+            
+            <!-- Enseignant encadrant -->
+            <div class="teacher-card" id="teacherCard">
+                <!-- Informations de l'enseignant -->
+            </div>
+            
+            <!-- Dernières activités -->
+            <div class="activities-section">
+                <h3><i class="fas fa-history"></i> Dernières activités</h3>
+                <div class="activities-list" id="activitiesList">
+                    <!-- Les activités seront chargées ici -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Livrables -->
+        <section id="deliverables" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-file-upload"></i> Gestion des livrables</h2>
+                <button class="btn-primary" id="uploadDeliverableBtn">
+                    <i class="fas fa-upload"></i> Déposer un livrable
+                </button>
+            </div>
+            
+            <!-- Zone de dépôt -->
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Déposer un fichier</h3>
+                <p>Glissez-déposez vos fichiers ici ou cliquez pour parcourir</p>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                <button class="btn-secondary" id="browseFilesBtn">
+                    <i class="fas fa-folder-open"></i> Parcourir les fichiers
+                </button>
+                <div class="file-types">
+                    <span><i class="fas fa-file-pdf"></i> PDF</span>
+                    <span><i class="fas fa-file-word"></i> Word</span>
+                    <span><i class="fas fa-file-code"></i> Code</span>
+                    <span><i class="fas fa-file-archive"></i> ZIP</span>
+                </div>
+            </div>
+            
+            <!-- Liste des livrables -->
+            <div class="deliverables-list">
+                <h3><i class="fas fa-list"></i> Mes livrables déposés</h3>
+                <table class="deliverables-table" id="deliverablesTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Nom du fichier</th>
+                            <th>Date de dépôt</th>
+                            <th>Taille</th>
+                            <th>Statut</th>
+                            <th>Note</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deliverablesTableBody">
+                        <!-- Les livrables seront chargés ici -->
+                        <tr>
+                            <td colspan="7" class="loading-cell">
+                                <i class="fas fa-spinner fa-spin"></i> Chargement des livrables...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Section: Calendrier -->
+        <section id="calendar" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Calendrier PFE</h2>
+                <div class="calendar-nav">
+                    <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                    <h3 id="currentMonth">Mois en cours</h3>
+                    <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Calendrier -->
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="day-header">Lun</div>
+                    <div class="day-header">Mar</div>
+                    <div class="day-header">Mer</div>
+                    <div class="day-header">Jeu</div>
+                    <div class="day-header">Ven</div>
+                    <div class="day-header">Sam</div>
+                    <div class="day-header">Dim</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Le calendrier sera généré dynamiquement -->
+                </div>
+            </div>
+            
+            <!-- Événements à venir -->
+            <div class="upcoming-events">
+                <h3><i class="fas fa-bell"></i> Événements à venir</h3>
+                <div class="events-list" id="upcomingEvents">
+                    <!-- Les événements seront chargés ici -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Messages -->
+        <section id="messages" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-envelope"></i> Messagerie</h2>
+                <button class="btn-primary" id="newMessageBtn">
+                    <i class="fas fa-plus"></i> Nouveau message
+                </button>
+            </div>
+            
+            <div class="messages-container">
+                <!-- Liste des conversations -->
+                <div class="conversations-list" id="conversationsList">
+                    <div class="conversation active">
+                        <div class="conversation-avatar">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="conversation-info">
+                            <h4>Dr. Mohamed Ould Ahmed</h4>
+                            <p class="last-message">Pensez à envoyer votre plan détaillé...</p>
+                            <p class="timestamp">Il y a 2 heures</p>
+                        </div>
+                        <span class="unread-count">3</span>
+                    </div>
+                    <!-- Plus de conversations -->
+                </div>
+                
+                <!-- Zone de message -->
+                <div class="message-area">
+                    <div class="message-header">
+                        <h3 id="currentConversation">Sélectionnez une conversation</h3>
+                    </div>
+                    <div class="messages-list" id="messagesList">
+                        <!-- Les messages seront chargés ici -->
+                    </div>
+                    <div class="message-input">
+                        <textarea id="messageInput" placeholder="Tapez votre message ici..." rows="3"></textarea>
+                        <button class="btn-send" id="sendMessageBtn">
+                            <i class="fas fa-paper-plane"></i> Envoyer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-university"></i> UNA - FST</h4>
+                    <p>Département de Mathématiques</p>
+                    <p>Année académique 2025-2026</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-clock"></i> Horaires de support</h4>
+                    <p>Lundi - Jeudi: 8h - 16h</p>
+                    <p>Vendredi: 8h - 12h</p>
+                    <p>support.pfe@fst.una.mr</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-link"></i> Liens rapides</h4>
+                    <ul class="footer-links">
+                        <li><a href="#help"><i class="fas fa-question-circle"></i> Aide en ligne</a></li>
+                        <li><a href="#guide"><i class="fas fa-book"></i> Guide PFE</a></li>
+                        <li><a href="#regulations"><i class="fas fa-file-contract"></i> Règlement PFE</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 FST-UNA - Système de suivi PFE - Version 1.0.0</p>
+                <p class="user-info">Connecté en tant que: <span id="footerUserName"></span> | 
+                    Dernière connexion: <span id="lastLogin"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="subjectDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalSubjectTitle">Détails du sujet</h3>
+                <button class="modal-close" id="closeSubjectModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalSubjectBody">
+                <!-- Contenu du sujet -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="closeSubjectBtn">Fermer</button>
+                <button class="btn-primary" id="applyToSubjectBtn">
+                    <i class="fas fa-paper-plane"></i> Postuler à ce sujet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard-student.js"></script>
+</body>
+</html>

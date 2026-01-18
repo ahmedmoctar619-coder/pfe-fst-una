@@ -117,6 +117,8 @@ app.get('/api/admin/dashboard', authenticate, authorize('admin'), (req, res) => 
     });
 });
 
+app.use('/api/deliverables', require('./routes/deliverables'));
+
 // Gestion des erreurs 404
 app.use((req, res) => {
     res.status(404).json({

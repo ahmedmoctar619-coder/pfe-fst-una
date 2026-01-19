@@ -38,3 +38,22 @@ Plateforme web pour la gestion des Projets de Fin d'Études au département de M
 
 ## 📄 Licence
 Projet de Web Dynamique - FST UNA 2025-2026
+
+## Connexion
+- Email: ahmed.salem@etudiant.una.mr
+
+  Mot de passe: etu123
+
+  Rôle: student
+
+- Email: mohamed.ouldahmed@fst.una.mr
+
+  Mot de passe: prof123
+
+  Rôle: teacher
+
+- Email: admin.pfe@fst.una.mr
+
+  Mot de passe: admin123
+
+  Rôle: admin

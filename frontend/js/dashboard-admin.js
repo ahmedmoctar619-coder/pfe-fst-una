@@ -42,55 +42,42 @@ class AdminDashboard {
 
     // Vérifier l'authentification
     async checkAuthentication() {
-    console.log('🔍 DEBUG: Vérification authentification démarrée');
-    
-    const userData = sessionStorage.getItem('pfe_user');
-    const token = sessionStorage.getItem('pfe_token');
-    
-    console.log('📱 DEBUG - userData:', userData);
-    console.log('📱 DEBUG - token:', token ? 'Présent' : 'Absent');
-    
-    if (!userData || !token) {
-        console.log('❌ DEBUG: Pas de session, redirection vers login');
-        this.redirectToLogin();
-        return;
-    }
-    
-    try {
-        this.currentUser = JSON.parse(userData);
-        console.log('👤 DEBUG - Utilisateur parsé:', this.currentUser);
+        const userData = sessionStorage.getItem('pfe_user');
+        const token = sessionStorage.getItem('pfe_token');
         
-        // Vérifier le rôle
-        if (this.currentUser.role !== 'admin') {
-            console.error('❌ DEBUG: Mauvais rôle:', this.currentUser.role);
+        if (!userData || !token) {
             this.redirectToLogin();
             return;
         }
         
-        console.log('🔐 DEBUG: Vérification token API...');
-        const response = await fetch(`${this.API_BASE_URL}/auth/verify`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        try {
+            this.currentUser = JSON.parse(userData);
+            
+            // Vérifier le rôle
+            if (this.currentUser.role !== 'admin') {
+                console.error('❌ Accès non autorisé: rôle non administrateur');
+                this.redirectToLogin();
+                return;
             }
-        });
-        
-        console.log('📡 DEBUG - Statut réponse:', response.status, response.statusText);
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ DEBUG: Erreur vérification:', errorText);
-            throw new Error(`Session invalide: ${response.status}`);
+            
+            // Vérifier si le token est encore valide
+            const response = await fetch(`${this.API_BASE_URL}/auth/verify`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Session invalide');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erreur d\'authentification:', error);
+            sessionStorage.removeItem('pfe_user');
+            sessionStorage.removeItem('pfe_token');
+            this.redirectToLogin();
         }
-        
-        console.log('✅ DEBUG: Authentification réussie!');
-        
-    } catch (error) {
-        console.error('❌ DEBUG: Erreur complète:', error);
-        sessionStorage.removeItem('pfe_user');
-        sessionStorage.removeItem('pfe_token');
-        this.redirectToLogin();
     }
-}
 
     // Rediriger vers la page de connexion
     redirectToLogin() {

@@ -121,9 +121,6 @@ app.use('/api/deliverables', require('./routes/deliverables'));
 app.use('/api/protected/teacher', authenticate, authorize('teacher'), require('./routes/protected/teacher'));
 app.use('/api/protected/admin', authenticate, authorize('admin'), require('./routes/protected/admin'));
 
-console.log('📚 Route enseignante activée: /api/protected/teacher');
-console.log('👑 Route administrateur activée: /api/protected/admin');
-
 // Gestion des erreurs 404
 app.use((req, res) => {
     res.status(404).json({

@@ -57,3 +57,9 @@ Projet de Web Dynamique - FST UNA 2025-2026
   Mot de passe: admin123
 
   Rôle: admin
+
+## Exection
+```bash
+`cd backend`
+`npm run dev`
+```

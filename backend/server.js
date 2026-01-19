@@ -118,6 +118,9 @@ app.get('/api/admin/dashboard', authenticate, authorize('admin'), (req, res) => 
 });
 
 app.use('/api/deliverables', require('./routes/deliverables'));
+app.use('/api/protected/teacher', authenticate, authorize('teacher'), require('./routes/protected/teacher'));
+
+console.log('📚 Route enseignante activée: /api/protected/teacher');
 
 // Gestion des erreurs 404
 app.use((req, res) => {

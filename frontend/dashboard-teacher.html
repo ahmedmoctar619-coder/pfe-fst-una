@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Enseignant - PFE FST UNA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/teacher.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header avec navigation -->
+    <header class="dashboard-header teacher-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logos">
+                        <img src="assets/logo-una.png" alt="UNA" class="logo-small">
+                        <img src="assets/logo-fst.png" alt="FST" class="logo-small">
+                    </div>
+                    <div class="header-title">
+                        <h1><i class="fas fa-chalkboard-teacher"></i> Tableau de bord Enseignant</h1>
+                        <p class="subtitle">Système de suivi PFE - Département de Mathématiques</p>
+                    </div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar teacher-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName">Chargement...</span>
+                            <span class="user-role">Enseignant</span>
+                            <span class="user-department" id="userDepartment"></span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation du dashboard -->
+    <nav class="dashboard-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="#overview" class="nav-item active" data-section="overview">
+                    <i class="fas fa-tachometer-alt"></i> Vue d'ensemble
+                </a></li>
+                <li><a href="#my-subjects" class="nav-item" data-section="my-subjects">
+                    <i class="fas fa-book"></i> Mes sujets
+                </a></li>
+                <li><a href="#applications" class="nav-item" data-section="applications">
+                    <i class="fas fa-file-signature"></i> Candidatures
+                    <span class="badge" id="pendingApplicationsCount">0</span>
+                </a></li>
+                <li><a href="#students" class="nav-item" data-section="students">
+                    <i class="fas fa-user-graduate"></i> Mes étudiants
+                </a></li>
+                <li><a href="#evaluations" class="nav-item" data-section="evaluations">
+                    <i class="fas fa-clipboard-check"></i> Évaluations
+                </a></li>
+                <li><a href="#calendar" class="nav-item" data-section="calendar">
+                    <i class="fas fa-calendar-alt"></i> Calendrier
+                </a></li>
+                <li><a href="#resources" class="nav-item" data-section="resources">
+                    <i class="fas fa-folder-open"></i> Ressources
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="container dashboard-container">
+        <!-- Section: Vue d'ensemble -->
+        <section id="overview" class="dashboard-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Vue d'ensemble</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="newSubjectBtn">
+                        <i class="fas fa-plus"></i> Nouveau sujet
+                    </button>
+                    <button class="btn-secondary" id="quickStatsBtn">
+                        <i class="fas fa-chart-bar"></i> Statistiques
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Cartes de statistiques -->
+            <div class="teacher-stats-cards">
+                <div class="teacher-stat-card">
+                    <div class="stat-icon total-subjects">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Sujets proposés</h3>
+                        <p class="stat-value" id="totalSubjects">0</p>
+                        <p class="stat-label">Dont <span id="availableSubjects">0</span> disponibles</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-stat-card">
+                    <div class="stat-icon total-students">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Étudiants encadrés</h3>
+                        <p class="stat-value" id="totalStudents">0</p>
+                        <p class="stat-label">Actuellement</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-stat-card">
+                    <div class="stat-icon pending-applications">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Candidatures en attente</h3>
+                        <p class="stat-value" id="pendingApplications">0</p>
+                        <p class="stat-label">À traiter</p>
+                    </div>
+                </div>
+                
+                <div class="teacher-stat-card">
+                    <div class="stat-icon upcoming-deadlines">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Échéances à venir</h3>
+                        <p class="stat-value" id="upcomingDeadlines">0</p>
+                        <p class="stat-label">Dans les 7 jours</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section d'activités récentes -->
+            <div class="activities-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-history"></i> Activités récentes</h3>
+                    <button class="btn-secondary" id="refreshActivitiesBtn">
+                        <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                </div>
+                
+                <div class="activities-list" id="recentActivities">
+                    <!-- Activités chargées dynamiquement -->
+                    <div class="activity loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Chargement des activités...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section des candidatures urgentes -->
+            <div class="urgent-section" id="urgentApplicationsSection">
+                <div class="section-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Candidatures nécessitant attention</h3>
+                </div>
+                <div class="urgent-list" id="urgentApplications">
+                    <!-- Candidatures urgentes chargées dynamiquement -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Mes sujets -->
+        <section id="my-subjects" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-book"></i> Gestion des sujets PFE</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="addSubjectBtn">
+                        <i class="fas fa-plus"></i> Ajouter un sujet
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="subjectSearch" placeholder="Rechercher un sujet...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtres -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="subjectStatusFilter">Statut :</label>
+                    <select id="subjectStatusFilter" class="filter-select">
+                        <option value="all">Tous les statuts</option>
+                        <option value="available">Disponible</option>
+                        <option value="full">Complet</option>
+                        <option value="in_progress">En cours</option>
+                        <option value="completed">Terminé</option>
+                        <option value="archived">Archivé</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="subjectYearFilter">Année :</label>
+                    <select id="subjectYearFilter" class="filter-select">
+                        <option value="all">Toutes les années</option>
+                        <option value="2025-2026">2025-2026</option>
+                        <option value="2024-2025">2024-2025</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="subjectSort">Trier par :</label>
+                    <select id="subjectSort" class="filter-select">
+                        <option value="newest">Plus récent</option>
+                        <option value="oldest">Plus ancien</option>
+                        <option value="title">Titre (A-Z)</option>
+                        <option value="deadline">Échéance</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Liste des sujets -->
+            <div class="subjects-management">
+                <div class="subjects-list" id="teacherSubjectsList">
+                    <!-- Sujets chargés dynamiquement -->
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Chargement de vos sujets...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Candidatures -->
+        <section id="applications" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-file-signature"></i> Gestion des candidatures</h2>
+                <div class="section-actions">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-status="pending">
+                            <i class="fas fa-clock"></i> En attente
+                            <span class="tab-badge" id="pendingTabCount">0</span>
+                        </button>
+                        <button class="filter-tab" data-status="approved">
+                            <i class="fas fa-check"></i> Approuvées
+                            <span class="tab-badge" id="approvedTabCount">0</span>
+                        </button>
+                        <button class="filter-tab" data-status="rejected">
+                            <i class="fas fa-times"></i> Rejetées
+                            <span class="tab-badge" id="rejectedTabCount">0</span>
+                        </button>
+                        <button class="filter-tab" data-status="all">
+                            <i class="fas fa-list"></i> Toutes
+                            <span class="tab-badge" id="allTabCount">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Liste des candidatures -->
+            <div class="applications-container">
+                <div class="applications-list" id="applicationsList">
+                    <!-- Candidatures chargées dynamiquement -->
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Chargement des candidatures...</p>
+                    </div>
+                </div>
+                
+                <!-- Détails de la candidature -->
+                <div class="application-details" id="applicationDetails">
+                    <div class="details-placeholder">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>Sélectionnez une candidature</h3>
+                        <p>Cliquez sur une candidature dans la liste pour voir les détails et prendre une décision.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Mes étudiants -->
+        <section id="students" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-user-graduate"></i> Mes étudiants encadrés</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="sendGroupMessageBtn">
+                        <i class="fas fa-envelope"></i> Message groupé
+                    </button>
+                    <button class="btn-secondary" id="exportStudentsBtn">
+                        <i class="fas fa-file-export"></i> Exporter la liste
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistiques des étudiants -->
+            <div class="students-stats">
+                <div class="student-stat">
+                    <div class="stat-circle active">
+                        <span id="activeStudentsCount">0</span>
+                    </div>
+                    <label>En cours</label>
+                </div>
+                <div class="student-stat">
+                    <div class="stat-circle completed">
+                        <span id="completedStudentsCount">0</span>
+                    </div>
+                    <label>Terminés</label>
+                </div>
+                <div class="student-stat">
+                    <div class="stat-circle delayed">
+                        <span id="delayedStudentsCount">0</span>
+                    </div>
+                    <label>En retard</label>
+                </div>
+                <div class="student-stat">
+                    <div class="stat-circle average">
+                        <span id="averageGradeStudents">0.0</span>
+                    </div>
+                    <label>Moyenne</label>
+                </div>
+            </div>
+            
+            <!-- Liste des étudiants -->
+            <div class="students-list-container">
+                <div class="students-table-container">
+                    <table class="students-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Étudiant</th>
+                                <th>Sujet</th>
+                                <th>Statut</th>
+                                <th>Progression</th>
+                                <th>Dernier livrable</th>
+                                <th>Note moyenne</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Étudiants chargés dynamiquement -->
+                            <tr>
+                                <td colspan="7" class="loading-cell">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement des étudiants...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Détails de l'étudiant -->
+            <div class="student-details-modal" id="studentDetailsModal">
+                <!-- Modal chargé dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- Section: Évaluations -->
+        <section id="evaluations" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-clipboard-check"></i> Évaluations des livrables</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="bulkEvaluateBtn">
+                        <i class="fas fa-tasks"></i> Évaluation groupée
+                    </button>
+                    <button class="btn-secondary" id="evaluationTemplatesBtn">
+                        <i class="fas fa-file-alt"></i> Modèles d'évaluation
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Onglets des évaluations -->
+            <div class="evaluation-tabs">
+                <button class="eval-tab active" data-type="pending">
+                    <i class="fas fa-inbox"></i> À évaluer
+                    <span class="tab-badge" id="pendingEvalCount">0</span>
+                </button>
+                <button class="eval-tab" data-type="evaluated">
+                    <i class="fas fa-check-circle"></i> Évalués
+                    <span class="tab-badge" id="evaluatedCount">0</span>
+                </button>
+                <button class="eval-tab" data-type="revised">
+                    <i class="fas fa-redo"></i> À réviser
+                    <span class="tab-badge" id="revisedCount">0</span>
+                </button>
+                <button class="eval-tab" data-type="all">
+                    <i class="fas fa-list"></i> Tous
+                    <span class="tab-badge" id="allEvalCount">0</span>
+                </button>
+            </div>
+            
+            <!-- Liste des livrables à évaluer -->
+            <div class="evaluations-list" id="evaluationsList">
+                <!-- Livrables chargés dynamiquement -->
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Chargement des livrables à évaluer...</p>
+                </div>
+            </div>
+            
+            <!-- Formulaire d'évaluation -->
+            <div class="evaluation-form-container" id="evaluationFormContainer">
+                <!-- Formulaire chargé dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- Section: Calendrier -->
+        <section id="calendar" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Calendrier des soutenances</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="addDefenseBtn">
+                        <i class="fas fa-plus"></i> Ajouter une soutenance
+                    </button>
+                    <button class="btn-secondary" id="printCalendarBtn">
+                        <i class="fas fa-print"></i> Imprimer le calendrier
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation du calendrier -->
+            <div class="calendar-controls">
+                <div class="calendar-nav">
+                    <button id="prevMonthBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h3 id="currentMonthYear">Mars 2025</h3>
+                    <button id="nextMonthBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="calendar-view">
+                    <button class="view-btn active" data-view="month">
+                        <i class="fas fa-calendar-alt"></i> Mois
+                    </button>
+                    <button class="view-btn" data-view="week">
+                        <i class="fas fa-calendar-week"></i> Semaine
+                    </button>
+                    <button class="view-btn" data-view="day">
+                        <i class="fas fa-calendar-day"></i> Jour
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Calendrier -->
+            <div class="teacher-calendar" id="teacherCalendar">
+                <!-- Calendrier chargé dynamiquement -->
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Chargement du calendrier...</p>
+                </div>
+            </div>
+            
+            <!-- Liste des soutenances à venir -->
+            <div class="upcoming-defenses">
+                <h3><i class="fas fa-bell"></i> Soutenances à venir</h3>
+                <div class="defenses-list" id="upcomingDefensesList">
+                    <!-- Soutenances chargées dynamiquement -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Ressources -->
+        <section id="resources" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-folder-open"></i> Ressources pédagogiques</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="uploadResourceBtn">
+                        <i class="fas fa-upload"></i> Ajouter une ressource
+                    </button>
+                    <button class="btn-secondary" id="organizeResourcesBtn">
+                        <i class="fas fa-folder"></i> Organiser
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Catégories de ressources -->
+            <div class="resources-categories">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-layer-group"></i> Toutes les ressources
+                </button>
+                <button class="category-btn" data-category="templates">
+                    <i class="fas fa-file-alt"></i> Modèles
+                </button>
+                <button class="category-btn" data-category="guides">
+                    <i class="fas fa-book"></i> Guides
+                </button>
+                <button class="category-btn" data-category="examples">
+                    <i class="fas fa-code"></i> Exemples
+                </button>
+                <button class="category-btn" data-category="regulations">
+                    <i class="fas fa-gavel"></i> Règlements
+                </button>
+                <button class="category-btn" data-category="other">
+                    <i class="fas fa-archive"></i> Autres
+                </button>
+            </div>
+            
+            <!-- Liste des ressources -->
+            <div class="resources-list" id="resourcesList">
+                <!-- Ressources chargées dynamiquement -->
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Chargement des ressources...</p>
+                </div>
+            </div>
+            
+            <!-- Zone de dépôt de ressources -->
+            <div class="resource-upload-zone" id="resourceUploadZone">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Déposer une nouvelle ressource</h3>
+                <p>Glissez-déposez vos fichiers ici ou cliquez pour parcourir</p>
+                <div class="upload-form" id="resourceUploadForm">
+                    <input type="file" id="resourceFileInput" style="display: none;">
+                    <div class="form-group">
+                        <label for="resourceTitle">Titre de la ressource *</label>
+                        <input type="text" id="resourceTitle" placeholder="Ex: Modèle de rapport PFE">
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceDescription">Description</label>
+                        <textarea id="resourceDescription" rows="3" placeholder="Description de la ressource..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceCategory">Catégorie *</label>
+                        <select id="resourceCategory">
+                            <option value="templates">Modèles</option>
+                            <option value="guides">Guides</option>
+                            <option value="examples">Exemples</option>
+                            <option value="regulations">Règlements</option>
+                            <option value="other">Autres</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceVisibility">Visibilité</label>
+                        <select id="resourceVisibility">
+                            <option value="private">Privé (moi seulement)</option>
+                            <option value="students">Mes étudiants</option>
+                            <option value="department">Département</option>
+                            <option value="all">Tous les enseignants</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-secondary" id="cancelUploadBtn">Annuler</button>
+                        <button class="btn-primary" id="submitResourceBtn">
+                            <i class="fas fa-upload"></i> Publier la ressource
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-university"></i> UNA - FST</h4>
+                    <p>Département de Mathématiques</p>
+                    <p>Année académique 2025-2026</p>
+                    <p>Plateforme PFE Enseignants</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-clock"></i> Support enseignant</h4>
+                    <p>Lundi - Jeudi: 8h - 16h</p>
+                    <p>Vendredi: 8h - 12h</p>
+                    <p>support.enseignants@fst.una.mr</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-link"></i> Liens utiles</h4>
+                    <ul class="footer-links">
+                        <li><a href="#guide"><i class="fas fa-book"></i> Guide enseignant PFE</a></li>
+                        <li><a href="#regulations"><i class="fas fa-file-contract"></i> Règlement PFE</a></li>
+                        <li><a href="#calendar"><i class="fas fa-calendar"></i> Calendrier académique</a></li>
+                        <li><a href="#help"><i class="fas fa-question-circle"></i> FAQ Enseignants</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 FST-UNA - Module Enseignant PFE - Version 1.0.0</p>
+                <p class="user-info">Connecté en tant que: <span id="footerUserName"></span> | 
+                    <span id="teacherStats">Sujets: <span id="footerSubjectsCount">0</span> | Étudiants: <span id="footerStudentsCount">0</span></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="subjectModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="subjectModalTitle">Nouveau sujet PFE</h3>
+                <button class="modal-close" id="closeSubjectModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="subjectForm">
+                    <!-- Formulaire chargé dynamiquement -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelSubjectBtn">Annuler</button>
+                <button class="btn-primary" id="submitSubjectBtn">
+                    <i class="fas fa-save"></i> Enregistrer le sujet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="defenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="defenseModalTitle">Planifier une soutenance</h3>
+                <button class="modal-close" id="closeDefenseModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulaire de soutenance -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard-teacher.js"></script>
+</body>
+</html>

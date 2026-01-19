@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - PFE FST UNA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header avec navigation -->
+    <header class="dashboard-header admin-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logos">
+                        <img src="assets/logo-una.png" alt="UNA" class="logo-small">
+                        <img src="assets/logo-fst.png" alt="FST" class="logo-small">
+                    </div>
+                    <div class="header-title">
+                        <h1><i class="fas fa-user-cog"></i> Administration</h1>
+                        <p class="subtitle">Système de suivi PFE - Département de Mathématiques</p>
+                    </div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-avatar admin-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name" id="userName">Administrateur</span>
+                            <span class="user-role">Administrateur système</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation simplifiée -->
+    <nav class="dashboard-nav">
+        <div class="container">
+            <ul class="nav-menu">
+                <li><a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                </a></li>
+                <li><a href="#users" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i> Utilisateurs
+                </a></li>
+                <li><a href="#system" class="nav-item" data-section="system">
+                    <i class="fas fa-cogs"></i> Système
+                </a></li>
+                <li><a href="#reports" class="nav-item" data-section="reports">
+                    <i class="fas fa-chart-bar"></i> Rapports
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <main class="container dashboard-container">
+        <!-- Section: Tableau de bord -->
+        <section id="dashboard" class="dashboard-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-tachometer-alt"></i> Tableau de bord administrateur</h2>
+                <p class="section-subtitle">Vue d'ensemble du système PFE FST-UNA</p>
+            </div>
+            
+            <!-- Cartes de statistiques essentielles -->
+            <div class="admin-stats-cards">
+                <div class="admin-stat-card">
+                    <div class="stat-icon total-users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Utilisateurs totaux</h3>
+                        <p class="stat-value" id="totalUsers">0</p>
+                        <div class="stat-breakdown">
+                            <span class="breakdown-item">
+                                <i class="fas fa-user-graduate"></i>
+                                <span id="studentCount">0</span> étudiants
+                            </span>
+                            <span class="breakdown-item">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                <span id="teacherCount">0</span> enseignants
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="stat-icon active-projects">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Projets PFE</h3>
+                        <p class="stat-value" id="totalProjects">0</p>
+                        <div class="stat-breakdown">
+                            <span class="breakdown-item">
+                                <i class="fas fa-play-circle"></i>
+                                <span id="activeProjects">0</span> actifs
+                            </span>
+                            <span class="breakdown-item">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="completedProjects">0</span> terminés
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="stat-icon system-status">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>État du système</h3>
+                        <p class="stat-value" id="systemStatus">En ligne</p>
+                        <div class="stat-breakdown">
+                            <span class="breakdown-item">
+                                <i class="fas fa-database"></i>
+                                <span id="databaseStatus">Connecté</span>
+                            </span>
+                            <span class="breakdown-item">
+                                <i class="fas fa-hdd"></i>
+                                <span id="storageUsage">0%</span> utilisé
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card">
+                    <div class="stat-icon recent-activity">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Activité récente</h3>
+                        <p class="stat-value" id="recentLogins">0</p>
+                        <div class="stat-breakdown">
+                            <span class="breakdown-item">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span id="todayLogins">0</span> aujourd'hui
+                            </span>
+                            <span class="breakdown-item">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span id="systemAlerts">0</span> alertes
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alertes système -->
+            <div class="system-alerts" id="systemAlertsSection">
+                <div class="section-header">
+                    <h3><i class="fas fa-exclamation-circle"></i> Alertes système</h3>
+                    <button class="btn-secondary" id="refreshAlertsBtn">
+                        <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                </div>
+                <div class="alerts-list" id="alertsList">
+                    <!-- Alertes chargées dynamiquement -->
+                    <div class="alert loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Chargement des alertes...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions rapides -->
+            <div class="quick-actions">
+                <h3><i class="fas fa-bolt"></i> Actions rapides</h3>
+                <div class="actions-grid">
+                    <button class="action-btn" onclick="admin.createUser()">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Nouvel utilisateur</span>
+                    </button>
+                    <button class="action-btn" onclick="admin.backupSystem()">
+                        <i class="fas fa-save"></i>
+                        <span>Sauvegarde</span>
+                    </button>
+                    <button class="action-btn" onclick="admin.viewLogs()">
+                        <i class="fas fa-scroll"></i>
+                        <span>Journaux système</span>
+                    </button>
+                    <button class="action-btn" onclick="admin.systemSettings()">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Paramètres</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Utilisateurs -->
+        <section id="users" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Gestion des utilisateurs</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" id="addUserBtn">
+                        <i class="fas fa-user-plus"></i> Ajouter un utilisateur
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearch" placeholder="Rechercher un utilisateur...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtres simples -->
+            <div class="simple-filters">
+                <select id="userRoleFilter" class="filter-select">
+                    <option value="all">Tous les rôles</option>
+                    <option value="student">Étudiants</option>
+                    <option value="teacher">Enseignants</option>
+                    <option value="admin">Administrateurs</option>
+                </select>
+                <select id="userStatusFilter" class="filter-select">
+                    <option value="all">Tous les statuts</option>
+                    <option value="active">Actif</option>
+                    <option value="inactive">Inactif</option>
+                </select>
+            </div>
+            
+            <!-- Tableau des utilisateurs -->
+            <div class="users-table-container">
+                <table class="users-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th>Date d'inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Utilisateurs chargés dynamiquement -->
+                        <tr>
+                            <td colspan="6" class="loading-cell">
+                                <i class="fas fa-spinner fa-spin"></i> Chargement des utilisateurs...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination simple -->
+            <div class="simple-pagination" id="usersPagination">
+                <!-- Pagination générée dynamiquement -->
+            </div>
+        </section>
+        
+        <!-- Section: Système -->
+        <section id="system" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-cogs"></i> Configuration du système</h2>
+            </div>
+            
+            <!-- Cartes de configuration -->
+            <div class="system-config">
+                <div class="config-card">
+                    <div class="config-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Année académique</h3>
+                    <div class="config-content">
+                        <p>Année en cours: <strong id="currentAcademicYear">2025-2026</strong></p>
+                        <button class="btn-secondary" onclick="admin.changeAcademicYear()">
+                            <i class="fas fa-edit"></i> Modifier
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="config-card">
+                    <div class="config-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Dates importantes</h3>
+                    <div class="config-content">
+                        <p>Ouverture inscriptions: <strong id="registrationStart">01/01/2025</strong></p>
+                        <p>Clôture inscriptions: <strong id="registrationEnd">15/03/2025</strong></p>
+                        <button class="btn-secondary" onclick="admin.configureDates()">
+                            <i class="fas fa-edit"></i> Configurer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="config-card">
+                    <div class="config-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Sécurité</h3>
+                    <div class="config-content">
+                        <p>Force mot de passe: <strong id="passwordStrength">Moyenne</strong></p>
+                        <p>Sessions: <strong id="sessionTimeout">8 heures</strong></p>
+                        <button class="btn-secondary" onclick="admin.securitySettings()">
+                            <i class="fas fa-edit"></i> Paramètres
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="config-card">
+                    <div class="config-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Base de données</h3>
+                    <div class="config-content">
+                        <p>Type: <strong>SQLite</strong></p>
+                        <p>Taille: <strong id="dbSize">15.2 MB</strong></p>
+                        <button class="btn-secondary" onclick="admin.dbMaintenance()">
+                            <i class="fas fa-tools"></i> Maintenance
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions système -->
+            <div class="system-actions">
+                <h3><i class="fas fa-terminal"></i> Actions système</h3>
+                <div class="actions-list">
+                    <button class="system-action-btn" onclick="admin.clearCache()">
+                        <i class="fas fa-broom"></i>
+                        <span>Vider le cache</span>
+                    </button>
+                    <button class="system-action-btn" onclick="admin.checkUpdates()">
+                        <i class="fas fa-sync"></i>
+                        <span>Vérifier les mises à jour</span>
+                    </button>
+                    <button class="system-action-btn" onclick="admin.exportData()">
+                        <i class="fas fa-file-export"></i>
+                        <span>Exporter les données</span>
+                    </button>
+                    <button class="system-action-btn warning" onclick="admin.systemRestart()">
+                        <i class="fas fa-redo"></i>
+                        <span>Redémarrer le système</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section: Rapports -->
+        <section id="reports" class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-bar"></i> Rapports et statistiques</h2>
+                <div class="section-actions">
+                    <button class="btn-primary" onclick="admin.generateReport()">
+                        <i class="fas fa-file-pdf"></i> Générer rapport
+                    </button>
+                    <button class="btn-secondary" onclick="admin.exportStats()">
+                        <i class="fas fa-download"></i> Exporter données
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Statistiques visuelles simples -->
+            <div class="stats-visual">
+                <div class="stat-chart">
+                    <h3><i class="fas fa-chart-pie"></i> Répartition par rôle</h3>
+                    <div class="chart-container">
+                        <canvas id="roleDistributionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="stat-chart">
+                    <h3><i class="fas fa-chart-line"></i> Activité mensuelle</h3>
+                    <div class="chart-container">
+                        <canvas id="monthlyActivityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Métriques clés -->
+            <div class="key-metrics">
+                <h3><i class="fas fa-key"></i> Métriques clés</h3>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-value" id="avgProjectDuration">-- jours</div>
+                        <div class="metric-label">Durée moyenne PFE</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="successRate">--%</div>
+                        <div class="metric-label">Taux de réussite</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="avgGrade">--/20</div>
+                        <div class="metric-label">Note moyenne</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="systemUptime">--%</div>
+                        <div class="metric-label">Disponibilité système</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Logs récents -->
+            <div class="recent-logs">
+                <h3><i class="fas fa-clipboard-list"></i> Journaux récents</h3>
+                <div class="logs-list" id="recentLogsList">
+                    <!-- Logs chargés dynamiquement -->
+                </div>
+                <button class="btn-secondary" onclick="admin.viewAllLogs()">
+                    <i class="fas fa-list"></i> Voir tous les journaux
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer minimal -->
+    <footer class="dashboard-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2025-2026 FST-UNA - Administration PFE - Version 1.0.0</p>
+                <p class="system-info">
+                    <span id="serverTime">Chargement...</span> | 
+                    Utilisateurs en ligne: <span id="onlineUsers">0</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals simples -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Nouvel utilisateur</h3>
+                <button class="modal-close" onclick="admin.closeUserModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <!-- Formulaire chargé dynamiquement -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="admin.closeUserModal()">Annuler</button>
+                <button class="btn-primary" onclick="admin.saveUser()">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard-admin.js"></script>
+</body>
+</html>
